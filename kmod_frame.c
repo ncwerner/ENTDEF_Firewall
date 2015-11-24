@@ -27,7 +27,7 @@
 //Struct holding set of hook function options
 static struct nf_hook_ops nfho;
 
-static struct* tcphdr tcp_header;
+static struct* tcphdr tcp_hdr;
 static struct* iphdr ip_hdr;
 
 //function to be called by hook
@@ -45,19 +45,19 @@ static struct* iphdr ip_hdr;
       //Blocks telnet from machine A and B
       //Two rules bitches
       else if(tcp_hdr->source == PORT &&
-	      ((strcmp(inet_ntoa(ipheader->saddr), MACHINE_A)) ||
-	       (strcmp(inet_ntoa(ipheader->saddr), MACHINE_B)))
+	      ((strcmp(inet_ntoa(ip_hdr->saddr), MACHINE_A)) ||
+	       (strcmp(inet_ntoa(ip_hdr->saddr), MACHINE_B)))
 	      )
 	return NF_DROP;
       
       //Blocking a particular IP from an outside web address
-      else if((strcmp(inet_ntoa(ipheader->daddr), DADDR)) &&
-	      (strcmp(inet_ntoa(ipheader->saddr), SADDR))
+      else if((strcmp(inet_ntoa(ip_hdr->daddr), DADDR)) &&
+	      (strcmp(inet_ntoa(ip_hdr->saddr), SADDR))
 	      )
 	return NF_DROP;
 
       //Block ssh traffic to everything except one IP
-      if(!((strcmp(inet_ntoa(ipheader->daddr), SSH_ALLOW))) &&
+      if(!((strcmp(inet_ntoa(ip_hdr->daddr), SSH_ALLOW))) &&
 	 tcp_hdr->dest == 22)
 	return NF_DROP;
 
